@@ -1,0 +1,459 @@
+
+<style>
+@import url('https://fonts.googleapis.com/css2?family=DM+Sans:ital,wght@0,400;0,500;0,600;1,400&family=JetBrains+Mono:wght@400;500&display=swap');
+*{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent}
+:root{
+  --bg0:#0d0d10;--bg1:#161619;--bg2:#1e1e24;--bg3:#26262f;--bg4:#2e2e3a;
+  --amber:#f59e0b;--amber2:#fbbf24;--amberL:#fef3c7;--amberD:#78350f;
+  --red:#ef4444;--redL:#fef2f2;--green:#22c55e;--greenL:#f0fdf4;--blue:#60a5fa;
+  --t1:#f0f0f2;--t2:#9ca3af;--t3:#6b7280;--t4:#4b5563;
+  --border:#1f1f28;--b2:#2a2a36;--b3:#363645;
+  --r:10px;--rm:8px;--rs:6px;
+  font-family:'DM Sans',sans-serif;background:var(--bg0);color:var(--t1);
+}
+.device{width:390px;margin:0 auto;background:var(--bg0);min-height:700px;position:relative;overflow:hidden;border-radius:20px;border:1px solid var(--bg3)}
+
+/* TOPBAR */
+.topbar{display:flex;justify-content:space-between;align-items:center;padding:16px 18px 12px;background:var(--bg1);border-bottom:0.5px solid var(--border)}
+.logo{font-size:17px;font-weight:600;letter-spacing:-0.3px;line-height:1}
+.logo b{color:var(--amber)}
+.topbar-right{display:flex;align-items:center;gap:10px}
+.icon-btn{width:34px;height:34px;border-radius:50%;background:var(--bg3);border:none;cursor:pointer;display:flex;align-items:center;justify-content:center}
+.icon-btn svg{width:16px;height:16px;stroke:var(--t2);fill:none;stroke-width:1.8}
+.avatar{width:34px;height:34px;border-radius:50%;background:var(--amberD);display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:600;color:var(--amber2)}
+
+/* STATS */
+.stats{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;padding:12px 16px}
+.sc{background:var(--bg2);border:0.5px solid var(--border);border-radius:var(--rm);padding:10px 8px;text-align:center;cursor:pointer;transition:border-color 0.15s}
+.sc:hover{border-color:var(--b3)}
+.sc-val{font-size:20px;font-weight:600;line-height:1;margin-bottom:3px}
+.sc-lbl{font-size:9px;color:var(--t3);text-transform:uppercase;letter-spacing:0.5px}
+.sc-val.a{color:var(--amber)}.sc-val.r{color:var(--red)}.sc-val.g{color:var(--green)}.sc-val.b{color:var(--blue)}
+
+/* SEARCH */
+.search-wrap{padding:0 16px 10px;position:relative}
+.search-inp{width:100%;background:var(--bg2);border:0.5px solid var(--b2);border-radius:var(--rm);padding:9px 14px 9px 36px;color:var(--t1);font-size:13px;font-family:'DM Sans',sans-serif;outline:none;transition:border-color 0.15s}
+.search-inp:focus{border-color:var(--amber)}
+.search-ico{position:absolute;left:26px;top:50%;transform:translateY(-50%);width:15px;height:15px;stroke:var(--t3);fill:none;pointer-events:none}
+
+/* FILTERS */
+.filters{display:flex;gap:6px;padding:0 16px 10px;overflow-x:auto;scrollbar-width:none}
+.filters::-webkit-scrollbar{display:none}
+.chip{flex-shrink:0;padding:5px 12px;border-radius:20px;font-size:11px;font-weight:500;border:0.5px solid var(--b2);background:var(--bg2);color:var(--t3);cursor:pointer;transition:all 0.12s;white-space:nowrap}
+.chip.on{background:var(--amberD);border-color:var(--amber);color:var(--amber2)}
+
+/* SECTION */
+.sec-head{display:flex;justify-content:space-between;align-items:center;padding:4px 16px 8px}
+.sec-title{font-size:11px;font-weight:500;color:var(--t3);text-transform:uppercase;letter-spacing:0.7px}
+.sec-count{font-size:11px;color:var(--t4);background:var(--bg3);padding:2px 8px;border-radius:4px}
+
+/* INV LIST */
+.inv-scroll{overflow-y:auto;max-height:320px;padding:0 16px;display:flex;flex-direction:column;gap:6px;scrollbar-width:thin;scrollbar-color:var(--bg3) transparent}
+.inv-row{background:var(--bg1);border:0.5px solid var(--border);border-radius:var(--r);padding:11px 13px;display:flex;align-items:center;gap:10px;cursor:pointer;transition:all 0.12s;position:relative;overflow:hidden}
+.inv-row::before{content:'';position:absolute;left:0;top:0;bottom:0;width:3px;background:transparent;transition:background 0.12s;border-radius:3px 0 0 3px}
+.inv-row:hover{border-color:var(--b3)}
+.inv-row.low::before{background:var(--red)}
+.inv-row.ok::before{background:var(--green)}
+.inv-row.selected{border-color:var(--amber);background:var(--bg2)}
+.p-icon{width:36px;height:36px;border-radius:var(--rs);background:var(--bg3);display:flex;align-items:center;justify-content:center;flex-shrink:0}
+.p-icon svg{width:16px;height:16px;stroke:var(--t3);fill:none;stroke-width:1.8}
+.p-info{flex:1;min-width:0}
+.p-name{font-size:12px;font-weight:500;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;line-height:1.2}
+.p-code{font-size:10px;color:var(--t3);font-family:'JetBrains Mono',monospace;margin-top:2px}
+.p-right{text-align:right;flex-shrink:0}
+.p-qty{font-size:17px;font-weight:600}
+.p-qty.low{color:var(--red)}.p-qty.ok{color:var(--green)}
+.p-badge{font-size:9px;padding:1px 6px;border-radius:3px;margin-top:2px;display:inline-block}
+.p-badge.low{background:#7f1d1d;color:#fca5a5}.p-badge.ok{background:#14532d;color:#86efac}
+
+/* DETAIL PANEL */
+.detail{background:var(--bg1);border:0.5px solid var(--border);border-radius:var(--r);margin:0 16px;padding:14px;display:none}
+.detail.show{display:block}
+.detail-top{display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:12px}
+.detail-name{font-size:14px;font-weight:600;line-height:1.3;flex:1}
+.detail-close{background:var(--bg3);border:none;border-radius:50%;width:26px;height:26px;cursor:pointer;display:flex;align-items:center;justify-content:center;flex-shrink:0;margin-left:8px}
+.detail-close svg{width:13px;height:13px;stroke:var(--t2);fill:none}
+.detail-meta{display:grid;grid-template-columns:1fr 1fr 1fr;gap:6px;margin-bottom:12px}
+.dm{background:var(--bg2);border-radius:var(--rs);padding:8px;text-align:center}
+.dm-v{font-size:18px;font-weight:600}
+.dm-l{font-size:9px;color:var(--t3);text-transform:uppercase;margin-top:2px}
+.stock-bar{height:6px;background:var(--bg3);border-radius:3px;overflow:hidden;margin-bottom:12px}
+.stock-fill{height:100%;border-radius:3px;transition:width 0.4s}
+.detail-btns{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+.d-btn{padding:9px;border-radius:var(--rs);font-size:12px;font-weight:500;font-family:'DM Sans',sans-serif;cursor:pointer;border:0.5px solid;display:flex;align-items:center;justify-content:center;gap:5px;transition:opacity 0.12s}
+.d-btn svg{width:13px;height:13px;stroke:currentColor;fill:none;stroke-width:2}
+.d-btn.in{background:rgba(34,197,94,0.12);border-color:rgba(34,197,94,0.3);color:var(--green)}
+.d-btn.out{background:rgba(239,68,68,0.12);border-color:rgba(239,68,68,0.3);color:var(--red)}
+
+/* TXN MODAL */
+.overlay{position:absolute;inset:0;background:rgba(0,0,0,0.75);z-index:50;display:flex;align-items:flex-end;opacity:0;pointer-events:none;transition:opacity 0.2s;border-radius:20px}
+.overlay.open{opacity:1;pointer-events:all}
+.modal{background:var(--bg1);border-radius:16px 16px 0 0;width:100%;padding:18px 18px 24px;border:0.5px solid var(--b2);transform:translateY(30px);transition:transform 0.2s}
+.overlay.open .modal{transform:translateY(0)}
+.drag-bar{width:36px;height:3px;background:var(--bg4);border-radius:2px;margin:0 auto 14px}
+.modal-title{font-size:14px;font-weight:600;margin-bottom:14px;display:flex;justify-content:space-between;align-items:center}
+.modal-close{background:none;border:none;cursor:pointer;color:var(--t3);font-size:18px;font-family:'DM Sans',sans-serif}
+.type-row{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:12px}
+.t-btn{padding:10px;border-radius:var(--rs);font-size:12px;font-weight:500;font-family:'DM Sans',sans-serif;cursor:pointer;border:1px solid var(--b2);background:var(--bg2);color:var(--t3);transition:all 0.12s;text-align:center}
+.t-btn.in.on{border-color:var(--green);color:var(--green);background:rgba(34,197,94,0.1)}
+.t-btn.out.on{border-color:var(--red);color:var(--red);background:rgba(239,68,68,0.1)}
+.fgrp{margin-bottom:10px}
+.flbl{font-size:10px;color:var(--t3);text-transform:uppercase;letter-spacing:0.5px;margin-bottom:5px;display:block}
+.finp{width:100%;background:var(--bg2);border:0.5px solid var(--b2);border-radius:var(--rs);padding:8px 12px;color:var(--t1);font-size:12px;font-family:'DM Sans',sans-serif;outline:none;transition:border-color 0.12s}
+.finp:focus{border-color:var(--amber)}
+.fsel{width:100%;background:var(--bg2);border:0.5px solid var(--b2);border-radius:var(--rs);padding:8px 12px;color:var(--t1);font-size:12px;font-family:'DM Sans',sans-serif;outline:none;appearance:none}
+.scan-row{display:flex;gap:6px}
+.scan-btn{flex-shrink:0;padding:8px 12px;background:var(--bg3);border:0.5px solid var(--b3);border-radius:var(--rs);cursor:pointer;display:flex;align-items:center;gap:5px;font-size:11px;color:var(--amber);font-family:'DM Sans',sans-serif}
+.scan-btn svg{width:14px;height:14px;stroke:currentColor;fill:none}
+.two-col{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+.sig-canvas{width:100%;height:90px;background:var(--bg2);border:0.5px solid var(--b2);border-radius:var(--rs);cursor:crosshair;display:block}
+.sig-row{display:flex;justify-content:space-between;align-items:center;margin-top:4px}
+.sig-hint{font-size:10px;color:var(--t3)}
+.sig-clr{background:none;border:none;font-size:10px;color:var(--amber);cursor:pointer;font-family:'DM Sans',sans-serif}
+.save-btn{width:100%;padding:12px;border-radius:var(--rs);background:var(--amber);color:#000;font-size:13px;font-weight:600;font-family:'DM Sans',sans-serif;border:none;cursor:pointer;margin-top:10px;transition:opacity 0.12s}
+.save-btn:hover{opacity:0.88}
+
+/* FAB */
+.fab{position:absolute;bottom:72px;right:16px;width:48px;height:48px;border-radius:50%;background:var(--amber);border:none;cursor:pointer;display:flex;align-items:center;justify-content:center;z-index:30;transition:transform 0.15s;box-shadow:0 4px 16px rgba(245,158,11,0.35)}
+.fab:hover{transform:scale(1.07)}
+.fab svg{width:20px;height:20px;stroke:#000;fill:none;stroke-width:2.5}
+
+/* NAVBAR */
+.navbar{position:absolute;bottom:0;left:0;right:0;background:var(--bg1);border-top:0.5px solid var(--border);display:flex;padding:8px 0 12px;z-index:20;border-radius:0 0 20px 20px}
+.nb{flex:1;display:flex;flex-direction:column;align-items:center;gap:3px;cursor:pointer;border:none;background:none;color:var(--t4);font-size:9px;font-family:'DM Sans',sans-serif;transition:color 0.12s;text-transform:uppercase;letter-spacing:0.5px}
+.nb.on{color:var(--amber)}
+.nb svg{width:18px;height:18px;stroke:currentColor;fill:none;stroke-width:1.8}
+
+/* PAGES */
+.page{display:none;padding-bottom:62px}
+.page.on{display:block}
+
+/* TXN PAGE */
+.txn-list{padding:0 16px;display:flex;flex-direction:column;gap:6px}
+.txn-card{background:var(--bg1);border:0.5px solid var(--border);border-radius:var(--r);padding:12px 14px}
+.txn-hdr{display:flex;justify-content:space-between;align-items:center;margin-bottom:6px}
+.txn-name{font-size:12px;font-weight:500}
+.tbadge{padding:2px 8px;border-radius:4px;font-size:10px;font-weight:500}
+.tbadge.in{background:rgba(34,197,94,0.15);color:var(--green)}
+.tbadge.out{background:rgba(239,68,68,0.15);color:var(--red)}
+.txn-meta{display:flex;gap:12px;flex-wrap:wrap}
+.tm{font-size:10px;color:var(--t3)}
+.tm span{color:var(--t2);font-weight:500}
+.sig-ok{font-size:10px;color:var(--green);margin-top:6px}
+.empty{text-align:center;padding:40px 20px;color:var(--t3);font-size:12px;line-height:1.6}
+.empty-cta{color:var(--amber);cursor:pointer}
+
+/* LOW PAGE */
+.low-list{padding:0 16px;display:flex;flex-direction:column;gap:6px}
+.low-card{background:var(--bg1);border:0.5px solid #7f1d1d;border-radius:var(--r);padding:12px 14px;display:flex;justify-content:space-between;align-items:center}
+.low-info .ln{font-size:12px;font-weight:500}
+.low-info .lc{font-size:10px;color:var(--t3);margin-top:2px}
+.low-nums{text-align:right}
+.low-cur{font-size:20px;font-weight:600;color:var(--red)}
+.low-min{font-size:10px;color:var(--t3)}
+.alert-bar{margin:10px 16px;background:rgba(239,68,68,0.1);border:0.5px solid rgba(239,68,68,0.3);border-radius:var(--rm);padding:10px 14px;display:flex;align-items:center;gap:10px}
+.alert-bar svg{width:16px;height:16px;stroke:var(--red);fill:none;flex-shrink:0}
+.alert-txt{font-size:11px;color:#fca5a5;line-height:1.4}
+
+/* TOAST */
+.toast{position:absolute;top:16px;left:50%;transform:translateX(-50%) translateY(-70px);padding:8px 18px;border-radius:var(--rs);font-size:12px;font-weight:500;z-index:99;transition:transform 0.22s;white-space:nowrap;border-radius:20px}
+.toast.show{transform:translateX(-50%) translateY(0)}
+</style>
+
+<div class="device">
+  <div class="toast" id="toast">Saved!</div>
+
+  <!-- TOPBAR -->
+  <div class="topbar">
+    <div class="logo">Parts<b>Stock</b> <span style="font-size:10px;color:var(--t3);font-weight:400;margin-left:4px">Auto Parts CRM</span></div>
+    <div class="topbar-right">
+      <div class="icon-btn"><svg viewBox="0 0 24 24"><path d="M18 8A6 6 0 006 8c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 01-3.46 0"/></svg></div>
+      <div class="avatar">BJ</div>
+    </div>
+  </div>
+
+  <!-- PAGE: INVENTORY -->
+  <div class="page on" id="pageInv">
+    <div class="stats">
+      <div class="sc"><div class="sc-val a" id="sTot">16</div><div class="sc-lbl">SKUs</div></div>
+      <div class="sc"><div class="sc-val r" id="sLow">7</div><div class="sc-lbl">Low</div></div>
+      <div class="sc"><div class="sc-val g" id="sTxn">0</div><div class="sc-lbl">Today</div></div>
+      <div class="sc"><div class="sc-val b" id="sCat">3</div><div class="sc-lbl">Cats</div></div>
+    </div>
+    <div class="search-wrap">
+      <svg class="search-ico" viewBox="0 0 24 24"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+      <input class="search-inp" id="searchInp" placeholder="Search product or barcode..." oninput="doSearch()">
+    </div>
+    <div class="filters">
+      <div class="chip on" onclick="setCat(this,'all')">All</div>
+      <div class="chip" onclick="setCat(this,'Boya & Kaporta')">Boya & Kaporta</div>
+      <div class="chip" onclick="setCat(this,'Hitachi Özel')">Hitachi Özel</div>
+      <div class="chip" onclick="setCat(this,'Makinist')">Makinist</div>
+    </div>
+    <div class="sec-head"><span class="sec-title">Inventory</span><span class="sec-count" id="invCount">16 items</span></div>
+    <div class="inv-scroll" id="invList"></div>
+    <div style="height:8px"></div>
+    <div class="detail" id="detailPanel"></div>
+  </div>
+
+  <!-- PAGE: TRANSACTIONS -->
+  <div class="page" id="pageTxn">
+    <div style="padding:12px 16px 8px;display:flex;justify-content:space-between;align-items:center">
+      <span style="font-size:11px;font-weight:500;color:var(--t3);text-transform:uppercase;letter-spacing:0.7px">Transaction Log</span>
+      <span class="sec-count" id="txnCount">0 records</span>
+    </div>
+    <div class="txn-list" id="txnList"><div class="empty">No transactions yet.<br><span class="empty-cta" onclick="openModal()">Tap + to record the first one ↗</span></div></div>
+  </div>
+
+  <!-- PAGE: LOW STOCK -->
+  <div class="page" id="pageLow">
+    <div class="alert-bar">
+      <svg viewBox="0 0 24 24"><path d="M10.29 3.86L1.82 18a2 2 0 001.71 3h16.94a2 2 0 001.71-3L13.71 3.86a2 2 0 00-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>
+      <div class="alert-txt" id="alertTxt">7 products are below minimum stock level. Reorder required.</div>
+    </div>
+    <div style="padding:4px 16px 8px;display:flex;justify-content:space-between;align-items:center">
+      <span style="font-size:11px;font-weight:500;color:var(--t3);text-transform:uppercase;letter-spacing:0.7px">Critical Items</span>
+    </div>
+    <div class="low-list" id="lowList"></div>
+  </div>
+
+  <!-- FAB -->
+  <button class="fab" onclick="openModal()">
+    <svg viewBox="0 0 24 24"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+  </button>
+
+  <!-- NAVBAR -->
+  <div class="navbar">
+    <button class="nb on" id="nb0" onclick="goPage(0)">
+      <svg viewBox="0 0 24 24"><rect x="2" y="3" width="20" height="14" rx="2"/><line x1="8" y1="21" x2="16" y2="21"/><line x1="12" y1="17" x2="12" y2="21"/></svg>
+      Inventory
+    </button>
+    <button class="nb" id="nb1" onclick="goPage(1)">
+      <svg viewBox="0 0 24 24"><polyline points="23 6 13.5 15.5 8.5 10.5 1 18"/><polyline points="17 6 23 6 23 12"/></svg>
+      Transactions
+    </button>
+    <button class="nb" id="nb2" onclick="goPage(2)">
+      <svg viewBox="0 0 24 24"><path d="M10.29 3.86L1.82 18a2 2 0 001.71 3h16.94a2 2 0 001.71-3L13.71 3.86a2 2 0 00-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>
+      Low Stock
+    </button>
+  </div>
+
+  <!-- MODAL -->
+  <div class="overlay" id="overlay">
+    <div class="modal">
+      <div class="drag-bar"></div>
+      <div class="modal-title">New Transaction <button class="modal-close" onclick="closeModal()">×</button></div>
+      <div class="type-row">
+        <button class="t-btn in on" id="tIn" onclick="setT('in')">↑ Stock In</button>
+        <button class="t-btn out" id="tOut" onclick="setT('out')">↓ Stock Out</button>
+      </div>
+      <div class="fgrp">
+        <label class="flbl">Barcode</label>
+        <div class="scan-row">
+          <input class="finp" id="mCode" placeholder="Scan or enter barcode..." style="flex:1">
+          <button class="scan-btn" onclick="doScan()">
+            <svg viewBox="0 0 24 24"><rect x="2" y="6" width="3" height="12" rx="1" fill="currentColor" stroke="none"/><rect x="7" y="6" width="1.5" height="12" rx="0.5" fill="currentColor" stroke="none"/><rect x="10.5" y="6" width="3" height="12" rx="1" fill="currentColor" stroke="none"/><rect x="15.5" y="6" width="1.5" height="12" rx="0.5" fill="currentColor" stroke="none"/><rect x="18.5" y="6" width="3" height="12" rx="1" fill="currentColor" stroke="none"/></svg>
+            Scan
+          </button>
+        </div>
+      </div>
+      <div class="fgrp"><label class="flbl">Product Name</label><input class="finp" id="mName" placeholder="Auto-fills from scan..."></div>
+      <div class="two-col">
+        <div class="fgrp"><label class="flbl">Quantity</label><input class="finp" type="number" id="mQty" placeholder="0" min="1"></div>
+        <div class="fgrp"><label class="flbl">Category</label>
+          <select class="fsel" id="mCat"><option>Boya & Kaporta</option><option>Hitachi Özel</option><option>Makinist</option></select>
+        </div>
+      </div>
+      <div class="two-col">
+        <div class="fgrp"><label class="flbl">Vehicle</label><input class="finp" id="mVeh" placeholder="Optional..."></div>
+        <div class="fgrp"><label class="flbl">Condition</label>
+          <select class="fsel" id="mCond"><option>New</option><option>Used</option><option>Refurb</option></select>
+        </div>
+      </div>
+      <div class="fgrp"><label class="flbl">Delivered / Received By</label><input class="finp" id="mPerson" placeholder="Name or company..."></div>
+      <div class="fgrp">
+        <label class="flbl">Digital Signature</label>
+        <canvas class="sig-canvas" id="sigC" width="350" height="90"></canvas>
+        <div class="sig-row"><span class="sig-hint">Sign with finger or stylus</span><button class="sig-clr" onclick="clrSig()">Clear</button></div>
+      </div>
+      <button class="save-btn" onclick="saveTxn()">Save Transaction to Google Sheets</button>
+    </div>
+  </div>
+</div>
+
+<script>
+const items=[
+  {n:'KALE FENOSEN SİYAH BOYA',c:'8681340000000',q:23,min:5,cat:'Boya & Kaporta'},
+  {n:'KALE FENOSEN GRİ BOYA',c:'8681340000000',q:2,min:3,cat:'Boya & Kaporta'},
+  {n:'KALE FENOSEN BEYAZ BOYA',c:'8681340000000',q:27,min:5,cat:'Boya & Kaporta'},
+  {n:'ROMA TİNER 20L',c:'8000020000000',q:38,min:5,cat:'Boya & Kaporta'},
+  {n:'VELCRO ZIMPARA DISK GRIT 320',c:'8693200000000',q:1100,min:300,cat:'Boya & Kaporta'},
+  {n:'VELCRO ZIMPARA DISK GRIT 180',c:'8693200000000',q:200,min:300,cat:'Boya & Kaporta'},
+  {n:'DAF KAMYON ÇAMURLUK',c:'8693200000000',q:2,min:3,cat:'Boya & Kaporta'},
+  {n:'BOYA TABANCASI AB-17S',c:'8693200000000',q:1,min:3,cat:'Boya & Kaporta'},
+  {n:'POLİKOR BOYA TABANCASI PA',c:'8693200000000',q:2,min:3,cat:'Boya & Kaporta'},
+  {n:'OSAKA 6" VACUUM 5MM OPC',c:'8681340000000',q:2,min:3,cat:'Boya & Kaporta'},
+  {n:'LUNA YAĞLI BOYA FIRÇASI 1',c:'8696210000000',q:2,min:3,cat:'Boya & Kaporta'},
+  {n:'LUNA KESTİRME BOYA FIRÇASI',c:'8696210000000',q:1,min:3,cat:'Boya & Kaporta'},
+  {n:'AIR FILTER KIT',c:'JFX770880',q:1,min:1,cat:'Hitachi Özel'},
+  {n:'DESENGRASANTE DE MOTOR',c:'0108422696803710',q:1,min:1,cat:'Hitachi Özel'},
+  {n:'KRAFT VOLL G12 ANTIFREEZE',c:'8699170000000',q:1,min:1,cat:'Makinist'},
+  {n:'GALAXY 20W50 SL/CF',c:'8693770000000',q:1,min:1,cat:'Makinist'},
+];
+const txns=[];
+let curCat='all',curQ='',txnType='in',selIdx=-1;
+let sigDraw=false,sigCtx,lx,ly;
+
+function isLow(it){return it.q<=it.min}
+function vis(){
+  return items.filter(it=>{
+    const catOk=curCat==='all'||it.cat.includes(curCat);
+    const qOk=!curQ||it.n.toLowerCase().includes(curQ)||it.c.includes(curQ);
+    return catOk&&qOk;
+  });
+}
+function renderInv(){
+  const list=vis();
+  document.getElementById('invCount').textContent=list.length+' items';
+  document.getElementById('invList').innerHTML=list.map((it,i)=>{
+    const low=isLow(it);
+    const ri=items.indexOf(it);
+    return`<div class="inv-row ${low?'low':'ok'} ${ri===selIdx?'selected':''}" onclick="selItem(${ri})">
+      <div class="p-icon"><svg viewBox="0 0 24 24"><path d="M21 16V8a2 2 0 00-1-1.73l-7-4a2 2 0 00-2 0l-7 4A2 2 0 003 8v8a2 2 0 001 1.73l7 4a2 2 0 002 0l7-4A2 2 0 0021 16z"/><polyline points="3.27 6.96 12 12.01 20.73 6.96"/><line x1="12" y1="22.08" x2="12" y2="12"/></svg></div>
+      <div class="p-info"><div class="p-name">${it.n}</div><div class="p-code">${it.c}</div></div>
+      <div class="p-right"><div class="p-qty ${low?'low':'ok'}">${it.q.toLocaleString()}</div><div class="p-badge ${low?'low':'ok'}">${low?'LOW':'OK'}</div></div>
+    </div>`;
+  }).join('');
+}
+function selItem(i){
+  selIdx=selIdx===i?-1:i;
+  renderInv();
+  const p=document.getElementById('detailPanel');
+  if(selIdx<0){p.classList.remove('show');return;}
+  const it=items[i];
+  const low=isLow(it);
+  const pct=Math.min(100,Math.round(it.q/it.min*100));
+  p.classList.add('show');
+  p.innerHTML=`
+    <div class="detail-top">
+      <div>
+        <div style="font-size:9px;color:var(--amber);text-transform:uppercase;letter-spacing:0.8px;margin-bottom:4px">${it.cat}</div>
+        <div class="detail-name">${it.n}</div>
+        <div style="font-size:10px;color:var(--t3);font-family:'JetBrains Mono',monospace;margin-top:3px">${it.c}</div>
+      </div>
+      <button class="detail-close" onclick="selIdx=-1;document.getElementById('detailPanel').classList.remove('show');renderInv()"><svg viewBox="0 0 24 24"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg></button>
+    </div>
+    <div class="detail-meta">
+      <div class="dm"><div class="dm-v" style="color:${low?'var(--red)':'var(--green)'}">${it.q}</div><div class="dm-l">In Stock</div></div>
+      <div class="dm"><div class="dm-v" style="color:var(--amber)">${it.min}</div><div class="dm-l">Minimum</div></div>
+      <div class="dm"><div class="dm-v" style="color:var(--blue)">${txns.filter(t=>t.name===it.n).length}</div><div class="dm-l">Txns</div></div>
+    </div>
+    <div style="display:flex;justify-content:space-between;font-size:10px;color:var(--t3);margin-bottom:4px">
+      <span>Stock level</span><span style="color:${low?'var(--red)':'var(--green)'}">${it.q} / ${it.min} min</span>
+    </div>
+    <div class="stock-bar"><div class="stock-fill" style="width:${pct}%;background:${low?'var(--red)':'var(--green)'}"></div></div>
+    <div class="detail-btns">
+      <button class="d-btn in" onclick="prefill(${i},'in')"><svg viewBox="0 0 24 24"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>Stock In</button>
+      <button class="d-btn out" onclick="prefill(${i},'out')"><svg viewBox="0 0 24 24"><line x1="5" y1="12" x2="19" y2="12"/></svg>Stock Out</button>
+    </div>`;
+  p.scrollIntoView({behavior:'smooth',block:'nearest'});
+}
+function prefill(i,t){
+  const it=items[i];
+  txnType=t;
+  document.getElementById('tIn').className='t-btn in'+(t==='in'?' on':'');
+  document.getElementById('tOut').className='t-btn out'+(t==='out'?' on':'');
+  document.getElementById('mCode').value=it.c;
+  document.getElementById('mName').value=it.n;
+  document.getElementById('mCat').value=it.cat;
+  openModal();
+}
+function setCat(el,c){
+  document.querySelectorAll('.chip').forEach(x=>x.classList.remove('on'));
+  el.classList.add('on');curCat=c;renderInv();
+}
+function doSearch(){curQ=document.getElementById('searchInp').value.toLowerCase();renderInv();}
+function goPage(n){
+  document.querySelectorAll('.page').forEach(p=>p.classList.remove('on'));
+  document.querySelectorAll('.nb').forEach(b=>b.classList.remove('on'));
+  document.querySelectorAll('.page')[n].classList.add('on');
+  document.getElementById('nb'+n).classList.add('on');
+  if(n===1)renderTxns();
+  if(n===2)renderLow();
+}
+function openModal(){document.getElementById('overlay').classList.add('open')}
+function closeModal(){document.getElementById('overlay').classList.remove('open')}
+function setT(t){
+  txnType=t;
+  document.getElementById('tIn').className='t-btn in'+(t==='in'?' on':'');
+  document.getElementById('tOut').className='t-btn out'+(t==='out'?' on':'');
+}
+function doScan(){
+  const pick=items[Math.floor(Math.random()*items.length)];
+  document.getElementById('mCode').value=pick.c;
+  document.getElementById('mName').value=pick.n;
+  document.getElementById('mCat').value=pick.cat;
+}
+function clrSig(){if(sigCtx)sigCtx.clearRect(0,0,350,90);}
+function saveTxn(){
+  const name=document.getElementById('mName').value;
+  const qty=parseInt(document.getElementById('mQty').value)||0;
+  if(!name||!qty){return;}
+  const canvas=document.getElementById('sigC');
+  const blank=document.createElement('canvas');blank.width=350;blank.height=90;
+  const hasSig=canvas.toDataURL()!==blank.toDataURL();
+  const now=new Date();
+  const time=now.getHours().toString().padStart(2,'0')+':'+now.getMinutes().toString().padStart(2,'0');
+  txns.push({name,qty,type:txnType,person:document.getElementById('mPerson').value,cat:document.getElementById('mCat').value,veh:document.getElementById('mVeh').value,cond:document.getElementById('mCond').value,time,hasSig});
+  const it=items.find(x=>x.n===name);
+  if(it){it.q=txnType==='in'?it.q+qty:Math.max(0,it.q-qty);}
+  document.getElementById('sTxn').textContent=parseInt(document.getElementById('sTxn').textContent)+1;
+  closeModal();
+  ['mCode','mName','mQty','mPerson','mVeh'].forEach(id=>document.getElementById(id).value='');
+  clrSig();
+  const t=document.getElementById('toast');
+  t.textContent=txnType==='in'?`✓ +${qty} units added — synced to Sheets`:`✓ -${qty} units removed — synced to Sheets`;
+  t.style.background=txnType==='in'?'#15803d':'#b91c1c';t.style.color='#fff';
+  t.classList.add('show');setTimeout(()=>t.classList.remove('show'),2500);
+  renderInv();renderLow();
+  if(selIdx>=0)selItem(selIdx);
+}
+function renderTxns(){
+  const el=document.getElementById('txnList');
+  document.getElementById('txnCount').textContent=txns.length+' records';
+  if(!txns.length){el.innerHTML='<div class="empty">No transactions yet.<br><span class="empty-cta" onclick="openModal()">Tap + to record the first one ↗</span></div>';return;}
+  el.innerHTML=txns.slice().reverse().map(t=>`<div class="txn-card">
+    <div class="txn-hdr"><div class="txn-name">${t.name}</div><div class="tbadge ${t.type}">${t.type.toUpperCase()} ${t.qty}</div></div>
+    <div class="txn-meta">
+      <div class="tm">Cat: <span>${t.cat}</span></div>
+      ${t.person?`<div class="tm">By: <span>${t.person}</span></div>`:''}
+      ${t.veh?`<div class="tm">Vehicle: <span>${t.veh}</span></div>`:''}
+      <div class="tm">Time: <span>${t.time}</span></div>
+      <div class="tm">Cond: <span>${t.cond}</span></div>
+    </div>
+    ${t.hasSig?'<div class="sig-ok">✓ Digital signature captured</div>':''}
+  </div>`).join('');
+}
+function renderLow(){
+  const low=items.filter(x=>x.q<=x.min);
+  document.getElementById('sLow').textContent=low.length;
+  document.getElementById('alertTxt').textContent=low.length+' products are below minimum stock level. Reorder required.';
+  document.getElementById('lowList').innerHTML=low.map(it=>`<div class="low-card">
+    <div class="low-info"><div class="ln">${it.n}</div><div class="lc">${it.cat} · ${it.c}</div></div>
+    <div class="low-nums"><div class="low-cur">${it.q}</div><div class="low-min">min ${it.min}</div></div>
+  </div>`).join('');
+}
+
+window.addEventListener('load',()=>{
+  renderInv();renderLow();
+  const c=document.getElementById('sigC');
+  sigCtx=c.getContext('2d');sigCtx.strokeStyle='#f0f0f2';sigCtx.lineWidth=1.8;sigCtx.lineCap='round';sigCtx.lineJoin='round';
+  c.addEventListener('mousedown',e=>{sigDraw=true;[lx,ly]=[e.offsetX,e.offsetY]});
+  c.addEventListener('mousemove',e=>{if(!sigDraw)return;sigCtx.beginPath();sigCtx.moveTo(lx,ly);sigCtx.lineTo(e.offsetX,e.offsetY);sigCtx.stroke();[lx,ly]=[e.offsetX,e.offsetY]});
+  c.addEventListener('mouseup',()=>sigDraw=false);c.addEventListener('mouseleave',()=>sigDraw=false);
+  c.addEventListener('touchstart',e=>{e.preventDefault();sigDraw=true;const r=c.getBoundingClientRect();[lx,ly]=[e.touches[0].clientX-r.left,e.touches[0].clientY-r.top]},{passive:false});
+  c.addEventListener('touchmove',e=>{e.preventDefault();if(!sigDraw)return;const r=c.getBoundingClientRect();const x=e.touches[0].clientX-r.left,y=e.touches[0].clientY-r.top;sigCtx.beginPath();sigCtx.moveTo(lx,ly);sigCtx.lineTo(x,y);sigCtx.stroke();[lx,ly]=[x,y]},{passive:false});
+  c.addEventListener('touchend',()=>sigDraw=false);
+  document.getElementById('overlay').addEventListener('click',e=>{if(e.target===document.getElementById('overlay'))closeModal()});
+});
+</script>
